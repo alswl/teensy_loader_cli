@@ -614,12 +614,26 @@ void init_hid_manager(void)
 	IOHIDManagerRegisterDeviceMatchingCallback(hid_manager, attach_callback, NULL);
 	IOHIDManagerRegisterDeviceRemovalCallback(hid_manager, detach_callback, NULL);
 	ret = IOHIDManagerOpen(hid_manager, kIOHIDOptionsTypeNone);
-	if (ret != kIOReturnSuccess) {
-		IOHIDManagerUnscheduleFromRunLoop(hid_manager,
-			CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
-		CFRelease(hid_manager);
-		printf_verbose("Error opening HID Manager\n");
-	}
+	// Fix Mac error:
+	//
+	// *   teensy.app did not work, push button did not work
+	//     *   hang at "Press Button on Teensy to manually enter Program Mode", but reset button did not work
+	// *   teensy_loader_cli did not work
+	//     *   brew version did not work
+	//     *   officaal download did not work
+	//     *   git master branch did not work
+	//     *   hang at "hint: press the reset button", but reset button did not work
+	// *   hid_listen.mac did not work
+	//
+	// solution via https://forum.pjrc.com/threads/36546-teensy_loader_cli-on-OSX-quot-Error-opening-HID-Manager-quot?highlight=Waiting+Teensy+device
+	//
+	//if (ret != kIOReturnSuccess) {
+	//	IOHIDManagerUnscheduleFromRunLoop(hid_manager,
+	//		CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
+	//	CFRelease(hid_manager);
+	//	printf_verbose("Error opening HID Manager\n");
+	//}
+	printf_verbose("Error opening HID Manager you stupid bananaface\n");
 }
 
 static void do_run_loop(void)
